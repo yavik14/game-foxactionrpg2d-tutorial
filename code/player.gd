@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
-@export var max_speed: int = 100
-@export var acceleration: int = 10
-@export var friction: int = 5
+@export var max_speed: int = 80
+@export var acceleration: int = 500
+@export var friction: int = 500
 
 var move_vector: Vector2 = Vector2.ZERO
 
@@ -13,9 +13,9 @@ func _physics_process(delta: float):
 	input_vector = input_vector.normalized()
 
 	if input_vector != Vector2.ZERO:
-		move_vector += input_vector * acceleration * delta
-		move_vector = move_vector.clampf(-max_speed * delta, max_speed * delta)
+		move_vector = move_vector.move_toward(input_vector * max_speed, acceleration * delta)
 	else:
 		move_vector = move_vector.move_toward(Vector2.ZERO, friction * delta) 
 
-	move_and_collide(move_vector)
+	velocity = move_vector
+	move_and_slide()
