@@ -6,10 +6,9 @@ extends CharacterBody2D
 
 var move_vector: Vector2 = Vector2.ZERO
 
-@onready var animation_player = null
-
-func _ready():
-	animation_player = $AnimationPlayer
+@onready var animation_player = $AnimationPlayer
+@onready var animation_tree = $AnimationTree
+@onready var animation_state = animation_tree.get("parameters/playback")
 
 func _physics_process(delta: float):
 	var input_vector = Vector2.ZERO
@@ -18,13 +17,13 @@ func _physics_process(delta: float):
 	input_vector = input_vector.normalized()
 
 	if input_vector != Vector2.ZERO:
-		if input_vector.x > 0:
-			animation_player.play("run_right")
-		else:
-			animation_player.play("run_left")
+		# animation_player.play("run_right")
+		animation_tree.set("parameters/Idle/blend_position", input_vector)
+		animation_tree.set("parameters/Run/blend_position", input_vector)
+		animation_state.travel("Run")
 		move_vector = move_vector.move_toward(input_vector * max_speed, acceleration * delta)
 	else:
-		animation_player.play("idle_right")
+		animation_state.travel("Idle")
 		move_vector = move_vector.move_toward(Vector2.ZERO, friction * delta) 
 
 	velocity = move_vector
